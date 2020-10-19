@@ -2,6 +2,8 @@ package com.company;
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
+import java.util.Arrays;
+
 public class Percolation {
     int[] sites;
     WeightedQuickUnionUF weightedQuickUnionUF;
@@ -15,10 +17,8 @@ public class Percolation {
         N = n;
         sites = new int[n * n];
         weightedQuickUnionUF = new WeightedQuickUnionUF(n * n + 2);
-        virtualTop =  n * n + 1;
-        virtualBottom = n * n + 2;
-
-        System.out.println(weightedQuickUnionUF.count());
+        virtualTop =  n * n;
+        virtualBottom = n * n + 1;
     }
 
     // opens the site (row, col) if it is not open already
@@ -65,30 +65,29 @@ public class Percolation {
     private void connectAdjacentOpenSites(int row, int col) {
         int index = getIndex(row, col);
 
-//        // if in first row connect with virtual component
-//        if (row == 1) {
-//            weightedQuickUnionUF.union(virtualTop, index);
-//
-//            return;
-//        }
-//
-//        // last row
-//        if (row == N) {
-//            weightedQuickUnionUF.union(index, virtualBottom);
-//
-//            return;
-//        }
+        System.out.println("connectAdjacentOpenSites");
+        System.out.println(index);
+
+        // if in first row connect with virtual component
+        if (row == 1) {
+            weightedQuickUnionUF.union(virtualTop, index);
+        }
+
+        // last row
+        if (row == N) {
+            weightedQuickUnionUF.union(index, virtualBottom);
+        }
 
         int indexOfTopSite = index - N;
         int indexOfBottomSite = index + N;
         int indexOfRightSite = index + 1;
         int indexOfLeftSite = index - 1;
 
-        if (sites[indexOfTopSite] == 1) {
+        if (indexOfTopSite > -1 && sites[indexOfTopSite] == 1) {
             weightedQuickUnionUF.union(index, indexOfTopSite);
         }
 
-        if (sites[indexOfBottomSite] == 1) {
+        if (indexOfBottomSite < N * N - 1 && sites[indexOfBottomSite] == 1) {
             weightedQuickUnionUF.union(index, indexOfBottomSite);
         }
 
@@ -99,7 +98,7 @@ public class Percolation {
         }
 
         // check if not on upper row
-        if (indexOfLeftSite % N != (N - 1) && sites[indexOfLeftSite] == 1) {
+        if (indexOfLeftSite > 0 && indexOfLeftSite % N != (N - 1) && sites[indexOfLeftSite] == 1) {
             weightedQuickUnionUF.union(index, indexOfLeftSite);
         }
     }
