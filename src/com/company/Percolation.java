@@ -1,8 +1,4 @@
-package com.company;
-
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
-
-import java.util.Arrays;
 
 public class Percolation {
     int[] sites;
@@ -14,6 +10,10 @@ public class Percolation {
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException("index " + n + "should be more than 0");
+        }
+
         N = n;
         sites = new int[n * n];
         weightedQuickUnionUF = new WeightedQuickUnionUF(n * n + 2);
@@ -23,7 +23,7 @@ public class Percolation {
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
-//        validate();
+        validate(row, col);
         if (isOpen(row, col)) {
             return;
         }
@@ -37,11 +37,13 @@ public class Percolation {
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
+        validate(row, col);
         return sites[getIndex(row, col)] == 1;
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
+        validate(row, col);
         return weightedQuickUnionUF.connected(0 ,getIndex(row, col));
     }
 
@@ -65,9 +67,6 @@ public class Percolation {
     private void connectAdjacentOpenSites(int row, int col) {
         int index = getIndex(row, col);
 
-        System.out.println("connectAdjacentOpenSites");
-        System.out.println(index);
-
         // if in first row connect with virtual component
         if (row == 1) {
             weightedQuickUnionUF.union(virtualTop, index);
@@ -87,26 +86,29 @@ public class Percolation {
             weightedQuickUnionUF.union(index, indexOfTopSite);
         }
 
-        if (indexOfBottomSite < N * N - 1 && sites[indexOfBottomSite] == 1) {
+        if (indexOfBottomSite < N * N && sites[indexOfBottomSite] == 1) {
             weightedQuickUnionUF.union(index, indexOfBottomSite);
         }
 
-        // check if not on bottom row
+        // check if right site not on bottom row
         if (indexOfRightSite % N != 0 && sites[indexOfRightSite] == 1) {
             weightedQuickUnionUF.union(index, indexOfRightSite);
-
         }
 
         // check if not on upper row
         if (indexOfLeftSite > 0 && indexOfLeftSite % N != (N - 1) && sites[indexOfLeftSite] == 1) {
             weightedQuickUnionUF.union(index, indexOfLeftSite);
         }
+
     }
 
-//    private void validate(int row, int col) {
-//        int n = openSites.length;
-//        if (p < 0 || p >= n) {
-//            throw new IllegalArgumentException("index " + p + " is not between 0 and " + (n-1));
-//        }
-//    }
+    private void validate(int row, int col) {
+        if (row < 1 || row > N) {
+            throw new IllegalArgumentException("row " + row + " is not between 1 and " + N);
+        }
+
+        if (col < 1 || col > N) {
+            throw new IllegalArgumentException("col " + col + " is not between 1 and " + N);
+        }
+    }
 }
