@@ -1,15 +1,11 @@
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.StdOut;
-import edu.princeton.cs.algs4.StdIn;
-
-import java.util.Arrays;
-
 
 public class PercolationStats {
-    double[] fractions;
-    int T;
-    int N;
+    private final double[] fractions;
+    private final int T;
+    private final int N;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
